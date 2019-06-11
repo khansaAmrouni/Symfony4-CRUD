@@ -1,0 +1,100 @@
+
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+            	<div class="col-sm-4">
+                {{ form_start(vehicleForm,{attr:{"novalide":"novalide"}}) }}
+
+                    {{ form_row(vehicleForm.model) }}
+                    {{ form_row(vehicleForm.color) }}
+                    {{ form_row(vehicleForm.capacity) }}
+                   	{{ form_row(vehicleForm.type) }}
+
+                    <button type="submit" class="btn btn-primary">Créer</button>
+                {{ form_end(vehicleForm) }}
+            	</div>
+           		<div class="col-sm-8">
+				   <table class="table table-bordered">
+					  <thead>
+					    <tr>
+					      <th scope="col">#</th>
+					      <th scope="col">Type</th>
+					      <th scope="col">Modele</th>
+					      <th scope="col">Couleur</th>
+					      <th scope="col">Capacité</th>
+					    </tr>
+					  </thead>
+					  <tbody>
+					  {% for vehicle in vehicles %}
+					    <tr>
+					      <th scope="row" class="nr">{{vehicle.id}}</th>
+					      <td>{{vehicle.type}}</td>
+					      <td>{{vehicle.model}}</td>
+					      <td>{{vehicle.color}}</td>
+					      <td>{{vehicle.capacity}}</td>
+					      <td><span class="table-edit-button"><button type="button" value="edit"
+                  					class="btn btn-default btn-rounded btn-sm my-0">Modifier</button></span></td>
+                  		  <td><span class="table-delete-button"><button type="button" value="delete"
+                  					class="btn btn-danger btn-rounded btn-sm my-0">Supprimer</button></span></td>
+					    </tr>
+					    {% endfor %}
+					  </tbody>
+					</table>
+				</div>
+            </div>
+        </div>
+        <script>
+        $(".table-edit-button").click(function () {
+
+									  var id = $(this).closest("tr").find(".nr").text();
+									  alert("voulez vous vraiment modifier cet element? ");
+									  window.location.href = "/form/edit/"+id
+									  $.ajax({
+    url: '/form/edit/'+id,
+    type: 'GET',
+    dataType: 'json',
+    data: form_data,
+    success:function(data){
+
+      // handling the response data from the controller
+      if(data.status == 'error'){
+        console.log("[API] ERROR: "+data.message);
+      }
+      if(data.status == 'success'){
+        console.log("[API] SUCCESS: "+data.message);
+      }
+    }
+  });
+									});
+
+	//delete 
+	$(".table-delete-button").click(function () {
+        							 
+									  var id = $(this).closest("tr").find(".nr").text();
+									  alert("voulez vous vraiment supprimer cet element ?");
+									  window.location.href = "/form/delete/"+id
+									  $.ajax({
+    url: '/form/delete/'+id,
+    type: 'POST',
+    dataType: 'json',
+    data: form_data,
+    success:function(data){
+
+      // handling the response data from the controller
+      if(data.status == 'error'){
+        console.log("[API] ERROR: "+data.message);
+      }
+      if(data.status == 'success'){
+        console.log("[API] SUCCESS: "+data.message);
+      }
+    }
+  });
+									});
+		</script>
+    </body>
+</html>
